@@ -1,0 +1,187 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}e-Auctions{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Load CSS 
+    =====================================-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Lora|Merriweather:300,400" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{% static 'auctions/css/animate.css' %}">
+    <link rel="stylesheet" href="{% static 'auctions/fontawesome/css/all.css' %}">
+    <link rel="stylesheet" href="{% static 'auctions/css/styles.css' %}">
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" sizes="16x16" href="{% static 'auctions/icon/favicon.png' %}" type="image/png">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{% static 'auctions/icon/favicon-144.png' %}">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{% static 'auctions/icon/favicon-114.png' %}">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{% static 'auctions/icon/favicon-72.png' %}">
+    <link rel="apple-touch-icon-precomposed" href="{% static 'auctions/icon/favicon-57.png' %}">
+</head>
+
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg fixed-top navbar-light ">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"  aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'active' %}">Active Listing</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"              aria-expanded="false">Category
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/allList/All">All</a>
+                            {% for category in categories %}
+                            <a class="dropdown-item" href="{% url 'allList' category.category %}">{{category.category}}</a>
+                            {% endfor %}
+                            <a class="dropdown-item" href="/allList/under $50">under $50</a>
+                        </div>
+                    </li>
+                </ul>
+
+            </div>
+            <a class="navbar-brand" href="{% url 'index' %}"></a>
+            <ul class="second">
+                {% if user.is_authenticated %}
+                <li id="dp">
+                    {% if user.image %}
+                    <div style="background-image: url({{user.image.url}});width:30px;height: 30px;background-size: cover;background-position: center;background-repeat: no-repeat;margin:0px;padding: 0;border-radius: 50%;border:1px solid #fff;">
+                    </div>
+                    {% else %}
+                    <div style="background-image: url(../media/Profile/avatar.png);width:30px;height: 30px;background-size: cover;background-position: center;background-repeat: no-repeat;margin:0px;padding: 0;border-radius: 50%;border:1px solid #fff;">
+                    </div>
+                    {% endif %}
+                </li>
+                <li class="item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"              aria-expanded="false">{{ user.username }}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'profile' user.username %}">Profile</a>
+                        <a class="dropdown-item" href="{% url 'create' %}">Sell Item</a>
+                        <a class="dropdown-item" href="{% url 'watchlist' user.username %}">watchlist</a>
+                        <a class="dropdown-item" data-toggle="collapse" href="#notification" aria-expanded="false" aria-controls="notification">
+                            Notification &nbsp;<span class="badge badge-secondary">6</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                    </div>
+                </li>
+                {% else %}
+                <li class="item" style="width: 60px;font-size: 12px;">
+                    <a class="" href="{% url 'login' %}">Sign in</a>
+                </li>
+                {% endif %}
+                
+                <li class="item">
+                    <a data-toggle="collapse" href="#cart" role="button" aria-expanded="false" aria-controls="cart">
+                        <span class="badge badge-secondary">
+                            <span class="fa fa-shopping-cart">&nbsp;{% if count %}{{count}}{% else %}0{% endif %}</span>
+                        </span>
+                    </a>
+                </li>
+            </ul>
+            <div class="collapse notification" id="notification">
+                <div class="card card-body">
+                    <ul>
+                        <li>hello</li>
+                        <li>welcome</li>
+                        <li>world</li>
+                        <li class="text-center" style="border-top:1px solid #ddd;margin-top:5px;">see all</li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="collapse cart" id="cart" style="z-index: 100;">
+            {% if user.is_authenticated %}
+            {% for cart in cart %}
+            <div class="media">
+                {% if cart.lists.image %}
+                <img class="mr-3" src="{{cart.lists.image.url}}" alt="{{cart.lists.title}}">
+                {% elif cart.lists.url %}
+                <img class="mr-3" src="{{cart.lists.url}}" alt="{{cart.lists.title}}">
+                {% else %}
+                <img class="mr-3" src="../media/List/list.jpg" alt="{{cart.lists.title}}">
+                {% endif %}
+                <div class="media-body">
+                    <p class="mt-0 text-danger">{{cart.lists.title}}</p>
+                </div>
+                <p>$ {{cart.bid}}</p>
+            </div>
+
+            {% empty %}
+                <div class="no-cart">
+                    <img src="{% static 'auctions/image/nocart.jpg' %}">
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <div class="no-cart">
+                <img src="{% static 'auctions/image/cart0.jpg' %}">
+            </div>
+        {% endif%}
+
+    </div>
+
+        </div>
+
+    <!-- Main Area -->
+    {% block body %}
+    {% endblock %}
+    
+
+    <!-- footer -->
+    <footer>
+        <div class="row">
+            <div class="social col">
+                <ul class="social-icon">
+                    <li><a href="#" class="fab fa-facebook-f"></a></li>
+                    <li><a href="#" class="fab fa-twitter"></a></li>
+                    <li><a href="#" class="fab fa-google-plus-g"></a></li>
+                    <li><a href="#" class="fab fa-linkedin-in"></a></li>
+                </ul>
+                <small>© 2020  <a href="{% url 'index' %}">e-Auction</a>. All Rights Reserved.</small>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
+<!-- JQuery
+=====================================-->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+<script>
+   $('.custom-file-input').on('change',function(){
+      var fileName = document.getElementById("customFile").files[0].name;
+      $(this).next('.custom-file-label').addClass("selected").html(fileName);
+    })
+
+
+    $(document).ready(function(){
+        $( 'a[data-toggle=modal],button[data-toggle=modal]').click(function(){
+            var data_id ='';
+            if (typeof $(this).data('id') !== 'undefined'){
+                data_id = $(this).data('id');
+            }
+            $( '.modal-footer #removed').val(data_id);
+            document.getElementById('removetitle').innerHTML = 'Remove ' + data_id;
+        })
+    });
+</script>

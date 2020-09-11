@@ -1,0 +1,104 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+	<main class="login register">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-8 offset-md-2">
+					<div class="card">
+						<div class="card-body">
+							<h2 class="card-title">Register</h2>
+							
+							{% if message %}
+							<div class="row no-gutters warning">
+								<div class="col-md-2 warning-icon">
+									<p class="card-text text-center"><i class="fa fa-info-circle"></i><p>
+							    </div>
+								<div class="col-md-10 warning-info">
+									<div class="card-body">			
+										<p class="card-text">{{ message }} </p>
+									</div>
+								</div>
+							</div>
+							{% endif %}
+
+							<div class="">
+								<form action="{% url 'register' %}" method="post" enctype="multipart/form-data">
+									{% csrf_token %}
+									<div class="form-group row name">
+							            <div class="form-group col">
+							                <input class="form-control" autofocus type="text" name="first" placeholder="First Name" autocomplete="off" required>
+							            </div>
+							            <div class="form-group col">
+							                <input class="form-control" autofocus type="text" name="last" placeholder="Last Name" autocomplete="off">
+							            </div>
+							        </div>
+
+							        <div class="form-group">
+						            	<input class="form-control" autofocus type="text" name="username" placeholder="Username" autocomplete="off" required>
+							        </div>
+
+							        <div class="form-group">
+							            <input class="form-control" type="email" name="email" placeholder="Email Address" autocomplete="off" required>
+							        </div>
+
+							        <div class="form-group row">
+							            <div class="col-md-4"><label>Gender :</label></div>
+							            <div class="custom-control custom-radio col-md-2">
+							                <input class="custom-control-input" id="custom1" type="radio" name="gender"  value="male" required><label for="custom1" class="custom-control-label" required>Male</label>&nbsp;&nbsp;&nbsp;&nbsp;
+							            </div>
+							            <div class="custom-control custom-radio col-md-2">
+							                <input class="custom-control-input" id="custom2" type="radio" name="gender"  value="female" required><label for="custom2" class="custom-control-label" required>Female</label>
+							            </div>
+							        </div>
+							        
+							        <div class="form-group">
+							        	<input class="form-control" type="password" name="password" placeholder="Password" minlength="8" maxlength="20" required>
+							        </div>
+							        
+							        <div class="form-group">
+							        	<input class="form-control" type="password" name="confirmation" placeholder="Confirm Password" required>
+							        </div>
+							        
+							        <div class="form-group">
+							            <input class="form-control" autofocus type="number" name="phone" placeholder="Phone Number" autocomplete="off" required>
+							        </div>
+
+							        <div class="form-group row">
+							            <div class="col-md-2 col-form-label">
+							            	<label>Address:</label>
+							            </div>
+							            <div class="col">
+							            	<textarea class="form-control" name="address" autocomplete="off" required></textarea>
+							           		<small class="form-text text-muted">city, state, Country</small>
+							        	</div>
+							        </div>
+
+							        <div class="form-group row">
+							            <div class="col-md-3 col-form-label"><label>Profile Picture :</label></div>
+							            <div class="col">
+							            	<div class="custom-file">
+  												<input type="file" class="custom-file-input" id="customFile" name="images">
+  												<label class="custom-file-label" for="customFile">Choose file</label>
+											</div>
+										</div>
+							        </div>
+							       
+				                  <button type="submit" class="btn btn-info btn-block" id="submit" value="Register">Register</button>
+				                </form>
+							</div>
+
+							<hr>
+							<div>
+								<p>Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+{% endblock %}

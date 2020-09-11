@@ -1,0 +1,112 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+	<!-- Main Area -->
+	<main class="list-main">
+		<div class="container">
+			{% if message %}
+                <div class="alert alert-danger alert-dismissible col-sm-12 text-center" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      {{  message | safe }}
+                </div>
+            {% endif %}
+            <div class="row">
+
+            {% if not access %}
+				{% for watchlists in watchlist %}
+				<div class="col-lg-4 col-md-4">
+					<div class="list-block animate-box">
+						{% if watchlists.watchlist.image %}
+						<a href="{% url 'fullList' watchlists.watchlist.title %}" class="list-list">
+							<img class="img-responsive" src="{{watchlists.watchlist.image.url}}" alt="{{watchlists.watchlist.title}}">
+						</a>
+						{% elif watchlists.watchlist.url %}
+						<a href="{% url 'fullList' watchlists.watchlist.title %}" class="list-list">
+							<img class="img-responsive" src="{{watchlists.watchlist.url}}" alt="{{watchlists.watchlist.title}}" width="100%">
+						</a>
+						{% else %}
+						<a href="{% url 'fullList' watchlists.watchlist.title %}" class="list-list">
+							<img class="img-responsive" src="../media/List/list.jpg" alt="{{watchlists.watchlist.title}}">
+						</a>
+						{% endif %}
+
+						{% if watchlists.watchlist.close %}
+						<p class="text-danger  border-danger list-list1"><span class="fa fa-window-close"></span>&nbsp;Closed</p>
+						{% endif %}
+						
+						<div class="list-block-text">
+							<span class="caption text-secondary">Category: <span class="badge badge-info">{{watchlists.watchlist.category.category}}</span>
+							</span>
+							<span class="comment text-secondary">
+								{{ watchlists.watchlist.timestamp|date:"d M, Y" }}&nbsp;&nbsp;<i class="far fa-comment text-info"> {{watchlists.comment.count}}</i>
+							</span>
+							<h3><a class="text-dark" href="{% url 'fullList' watchlists.watchlist.title %}">{{watchlists.watchlist.title | title}}</a></h3>
+							<div class="row">
+								{% if watchlists.watchlist.active %}
+								<div class="col">
+									<p class="current">
+										current: <span class="text-success">{% if watchlists.watchlist.currentbid == watchlists.watchlist.startbid %}No Bid {% else %} $ {{watchlists.watchlist.currentbid}}{% endif %}</span>
+									</p>
+								</div>
+								{% else %}
+								<div class="col">
+									<p class="current">closed: <span class="text-success"> $ {{watchlists.watchlist.finalbid}}</span></p>
+								</div>
+								{% endif %}
+								<div class="col">
+									<p class="price">Starting: <span class="text-danger"> $ {{watchlists.watchlist.startbid | floatformat}}</span></p>
+								</div>
+							</div>
+							<p>{{watchlists.watchlist.description|truncatewords:"15" }}</p>
+							<div class="row watch-list"> 
+								<div class="col-md-4 watch-view">
+									<a href="{% url 'fullList' watchlists.watchlist.title %}" class="btn btn-secondary"><span class="fa fa-eye"></span>&nbsp;View</a>
+								</div>
+								<!-- Button trigger modal -->
+								<div class="col watch-remove">
+									<a href="" class="btn btn-danger" data-toggle="modal" data-target="#staticBackdrop" data-id="{{watchlists.watchlist.title}}"><span class="fas fa-trash"></span>&nbsp;Remove watchlist</a>
+								</div>
+							</div>
+						</div> 
+					</div>
+				</div>
+				{% empty %}
+					<div>
+						<img class="img-fluid" src="{% static 'auctions/image/nolist.jpg' %}" width="100%">
+					</div>
+				{% endfor %}
+			{% endif %}
+			</div>
+			<!-- Modal -->
+			<div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+			    	<div class="modal-content">
+			      		<div class="modal-header">
+			        		<h5 class="modal-title" id="staticBackdropLabel">
+			        			<p id="removetitle" style="font-size:24px;font-weight:bold;"></p>
+			        		</h5>
+			        		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			          			<span aria-hidden="true">&times;</span>
+			        		</button>
+			      		</div>
+			      		<div class="modal-body">
+			        		Do you really want to remove this item from watchlist?
+			      		</div>
+			      		<div class="modal-footer">
+			        		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			        		{% if user.is_authenticated %}
+			        		<form action="{% url 'watchlist' user.username %}" method="POST">
+			        			{% csrf_token %}
+			        			<input id="removed" name="removed" type="hidden">
+			        			<button type="submit" class="btn btn-danger" id="delete_watchlist" name="delete_watchlist" value="delete_watchlist_list"><span class="fas fa-trash"></span>&nbsp;Remove watchlist</button>
+			        		</form>
+			        		{% endif %}
+			      		</div>
+			    	</div>
+			  	</div>
+			</div>
+		</div>
+	</main>
+
+{% endblock %}        

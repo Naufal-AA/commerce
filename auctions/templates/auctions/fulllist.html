@@ -1,0 +1,153 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+	<main>
+		<div class="container">
+			{% if message %}
+                <div class="alert alert-danger alert-dismissible col-sm-12 text-center" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      {{  message | safe }}
+                </div>
+            {% endif %}
+            {% if success %}
+                <div class="alert alert-success alert-dismissible col-sm-12 text-center" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      {{  success | safe }}
+                </div>
+            {% endif %}
+
+			{% if lists %}
+			<div class="media col-md-12 list-full">
+				{% if lists.image %}
+				<img src="{{lists.image.url}}" width="25%" class="align-self-center mr-3 list-image" alt="{{lists.title}}">
+				{% elif lists.url %}
+				<img src="{{lists.url}}" width="25%" class="align-self-center mr-3 list-image" alt="{{lists.title}}">
+				{% else %}
+				<img src="../media/List/list.jpg" width="25%" class="align-self-center mr-3 list-image" alt="{{lists.title}}">
+				{% endif %}
+				{% if lists.close %}
+				<p class="closed text-light"><span class="fa fa-window-close"></span> Closed</p>
+				{% endif %}
+				<div class="media-body">
+			    	<div class="row user">
+			    		<div class="col">
+			    			<h5 class="mt-0">{{lists.title | title}}</h5>
+			    		</div>
+			    		<div class="col-md-2">
+			    			<h6 class="mt-0">$ {{lists.startbid | floatformat}}</h6>
+			    		</div>
+			    	</div>
+			    	<p><span class="badge badge-info">Category: {{lists.category.category}}</span></p>
+			    	<p>{{lists.description| linebreaks | safe}}</p>
+			    	
+			    	{% if lists.active %}
+			    	<div class="bid">
+			    		<form action="{% url 'fullList' lists.title %}" method="POST">
+			    			{% csrf_token %}
+			    			<div class="form-group row">
+								<label for="current" class="col-sm-3 col-form-label">Current Price</label>
+								<div class="col">
+									<input type="text" readonly class="form-control-plaintext text-success" id="current" name="current"
+									{% if lists.currentbid == lists.startbid %} value="No Bid" {% else %} value="$ {{lists.currentbid}}" {% endif %}>
+							    </div>
+							</div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group">
+										<div class="input-group mb-3">
+								  			<div class="input-group-prepend">
+								    			<span class="input-group-text" id="dollar">$</span>
+								  			</div>
+								  			<input type="text" class="form-control" id="dollar" name="dollar" aria-describedby="dollar" Placeholder="place your bid" autocomplete="off" autofocus required>
+										</div>
+							            <small class="form-text text-muted"> enter US $ {{lists.currentbid | add:"1"}} or more </small>
+									</div>
+								</div>
+								<div class="col">
+									<button type="submit" class="btn btn-info" id="submit" name="bid" value="save_bid">Place bid</button>
+								</div>
+							</div>			    			
+			    		</form>
+			    	
+						<form action="{% url 'fullList' lists.title %}" method="POST">
+							{% csrf_token %}
+			    			{% for watch in watch %}
+				    			{% if watch.watched %}
+								<button type="submit" class="btn btn-outline-primary text-nowrap" id="watched" value="watched" disabled>
+									<span class="fas fa-heart"></span> Already listed as watchlist
+								</button>
+								{% endif %}
+
+							{% empty %}
+									{% if lists.active %} 
+										<input type="hidden" name="watchid" value="{{lists.id}}">
+										<button type="submit" class="btn btn-outline-primary" id="watchlist" name="watchlist" value="watched"><span class="far fa-heart"></span> Added to watchList</button>
+									{% endif %}
+							{% endfor %}
+						</form>
+			    	</div>
+			    	{% endif %}
+			    	{% if lists.winner %}
+			    	<div class="bid">
+			    		<div class="success">
+			    			<p class="text-center text-success">Congratulation! {{lists.winner}} won the match with ${{lists.finalbid}}
+			    		</div>
+			    	</div>
+			    	{% endif %}
+			    	<div class="list-user">
+			    		<div style="background-image: url({{lists.user.image.url}});width:30px;height: 30px;background-size: cover;background-position: center;background-repeat: no-repeat;margin:0;padding: 0;border-radius: 50%;"></div>
+			    		<span>{{lists.user.username}}</span>
+                        <span><i class="fa fa-date"></i> {{ lists.timestamp|date:"d F, Y" }}</span>
+			    	</div>
+			  	</div>
+			</div>
+			{% endif %}
+			<hr>
+			<div class="leave">
+				<h5>Leave your comment</h5>
+				<form action="{% url 'fullList' lists.title %}" method="POST">
+					{% csrf_token %}
+					<div class="row">
+						{% if user.is_authenticated %}
+						<div class="col-md-1">
+							<div style="background-image: url({{user.image.url}});width:40px;height: 40px;background-size: cover;background-position: center;background-repeat: no-repeat;margin:5px 0 0 10px;padding: 0;border-radius: 50%;"></div>
+						</div>
+						{% endif %}
+						<div class="col">
+							<div class="form-group">
+				    			<textarea class="form-control" name="description" required></textarea>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<button type="submit" id="submit" name="comment" value="put_a_comment"><span class="fas fa-paper-plane"></span></button>
+						</div>
+					</div>
+				</form>
+			</div>
+			<hr>
+			<div class="comments">
+				<h5>comments</h5>
+				
+				{% for  comments in comment %}
+				<div class="media">
+  					<div style="background-image: url({{comments.name.image.url}});width:45px;height: 45px;background-size: cover;background-position: center;background-repeat: no-repeat;margin-right:10px;border-radius: 50%;">
+			    	</div>
+  					<div class="media-body">
+    					<div class="row media-user">
+    						<div class="col">
+    							<h6 class="mt-0">{{comments.name.username}}</h6>
+    						</div>
+    						<div class="col text-right" style="margin-right: 60px;">
+    							<p class="text-secondary"> {{ comments.timestamp|date:"d F, Y" }}</p>
+    						</div>
+    					</div>
+    					{{comments.comment}}
+  					</div>
+				</div>
+				{% endfor %}
+				
+			</div>
+		</div>
+	</main>
+{% endblock %}

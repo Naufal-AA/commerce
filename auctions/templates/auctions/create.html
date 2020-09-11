@@ -1,0 +1,187 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+	<!-- Main Area -->
+
+	<main>
+		<div class="container">
+			{% if messages %}
+                <div class="alert alert-danger alert-dismissible col-sm-12 text-center" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      {{  messages | safe }}
+                </div>
+            {% endif %}
+			
+			<span class="created">Create your List</span>
+			<input type="checkbox" class="check" style="vertical-align: top;">
+			<span class="viewed">View your list</span>
+	
+			<div class="content create col-md-8 offset-md-2">
+				<div class="row">
+			    	<div class="col">
+			    		<h1 class="text-center text-secondary">Sell your item</h1>
+			    	</div>
+
+				
+				</div>
+				{% if message %}
+				<div class="row">
+					<div class="card border-danger col-md-10 offset-md-1">
+						<div class="card-body text-danger">
+				    		<p class="card-text">{{ message|safe }}</p>
+				  		</div>
+					</div>
+				</div>
+				{% endif %}
+				{% if success %}
+				<div class="row">
+					<div class="card border-success col-md-10 offset-md-1">
+						<div class="card-body text-danger">
+				    		<p class="card-text">{{ success|safe }}</p>
+				  		</div>
+					</div>
+				</div>
+				{% endif %}
+				
+
+				<form action="{% url 'create' %}" method="post" enctype="multipart/form-data">
+					{% csrf_token %}
+					<div class="form-group">
+						<label for="title"> Title</label>
+				    	<input type="text" class="form-control" id="title" name="title" Placeholder="Title" autocomplete="off" autofocus required>
+					</div>
+					<div class="form-group">
+						<label for="description"> Description</label>
+				    	<textarea class="form-control" name="description" required></textarea>
+			            <small class="form-text text-muted">tell something about your product</small>
+					</div>
+					<div class="form-group">
+			    		<label for="category">Category</label>
+				    	<select class="form-control custom-select" id="category" name="category" required>
+						      <option value="">--SELECT--</option>
+						      {% for category in categories %}
+						      <option value="{{category.category}}">{{category.category}}</option>
+						      {% endfor %}
+				    	</select>
+				  	</div>
+				  	<div class="form-group">
+				  		<label for="price">Your bid</label>
+						<div class="input-group mb-3">
+				  			<div class="input-group-prepend">
+				    			<span class="input-group-text" id="dollar">$</span>
+				  			</div>
+				  			<input type="text" class="form-control" id="dollar" name="price" aria-describedby="dollar" Placeholder="rate your bid" autocomplete="off" required>
+						</div>
+			            <small class="form-text text-muted">not more than $10000</small>
+					</div>
+					
+
+					<div class="accordion" id="accordionExample">
+	  					<label for="image">Image</label>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="card text-white bg-info">
+							    	<div class="card-header" id="headingOne">
+							    		<h2 class="mb-0">
+							        		<button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+							        			Upload Image
+							        		</button>
+							      		</h2>
+							    	</div>
+							  	</div>	
+							</div>
+							<div class="col-md-3">
+								<div class="card text-white bg-info">
+							    	<div class="card-header" id="headingTwo">
+							    		<h2 class="mb-0">
+							        		<button class="btn btn-info collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+							          			Paste From URL
+							        		</button>
+							      		</h2>
+							    	</div>
+					  			</div>
+							</div>
+							<div class="col">
+								<p>any of one (Optional)</p>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col">
+						    	<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+						      		<div class="custom-file">
+						  				<input type="file" class="custom-file-input" id="customFile" name="imageupload">
+						  				<label class="custom-file-label" for="customFile">Choose file</label>
+									</div>
+						    	</div>
+						    	<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+						      		<div class="form-group">
+								    	<input type="url" class="form-control" id="imageurl" name="imageurl" Placeholder="Paste URL" autocomplete="off">
+									</div>
+						    	</div>
+							</div>
+						</div>
+					</div>
+					<button type="submit" class="btn btn-info btn-block" id="submit" value="submit">Create</button>
+					<hr>
+				</form>
+			</div>
+			<div class="content viewlist">
+				<div class="row">
+
+					{% for list in list %}
+					<div class="col-lg-4 col-md-4">
+						<div class="list-block animate-box">
+							{% if list.image %}
+							<a href="{% url 'viewlist' list.user.username list.title %}" class="list-list">
+								<img class="img-responsive" src="{{list.image.url}}" alt="{{list.title}}">
+							</a>
+							{% elif list.url %}
+							<a href="{% url 'viewlist' list.user.username list.title %}" class="list-list">
+								<img class="img-responsive" src="{{list.url}}" alt="{{list.title}}" width="100%">
+							</a>
+							{% else %}
+							<a href="{% url 'viewlist' list.user.username list.title %}" class="list-list">
+								<img class="img-responsive" src="../media/List/list.jpg" alt="{{list.title}}">
+							</a>
+							{% endif %}
+							{% if list.close %}
+							<p class="text-white bg-danger border-danger list-list1"><span class="fa fa-window-close"></span>&nbsp;Closed</p>
+							{% endif %}
+							<div class="list-block-text">
+								<span class="caption text-secondary">Category: <span class="badge badge-info">{{list.category.category}}</span>
+								</span>
+								<span class="comment text-secondary"> {{ list.timestamp|date:"d M, Y" }}&nbsp;&nbsp;
+									<i class="far fa-comment text-info"> {{list.comment.count}}</i>
+								</span>	
+								<h3><a class="text-dark" href="{% url 'viewlist' list.user.username list.title %}">{{list.title | title}}</a></h3>
+								<div class="row">
+									{% if list.active %}
+									<div class="col">
+										<p class="current">
+											current: <span class="text-success">{% if list.currentbid == list.startbid %} No Bid 
+											{% else %}$ {{list.currentbid}}{% endif %}</span>
+										</p>
+									</div>
+									{% else %}
+									<div class="col">
+										<p class="current">closed: <span class="text-success"> $ {{list.finalbid}}</span></p>
+									</div>
+									{% endif %}
+									<div class="col">
+										<p class="price">Starting: <span class="text-danger"> $ {{list.startbid | floatformat}}</span></p>
+									</div>
+								</div>
+								<p>{{list.description|truncatewords:"15" }}</p>
+								<a href="{% url 'viewlist' list.user.username list.title %}" class="btn btn-info">Read more</a>
+							</div> 
+						</div>
+					</div>
+					{% endfor %}
+				</div>
+			</div>	
+		</div>
+	</main>
+
+{% endblock %}

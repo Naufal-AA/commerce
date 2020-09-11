@@ -1,0 +1,65 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+	<main class="list-main">
+		<div class="container">
+			<div class="row">
+				{% for active in allLists %}
+				<div class="col-lg-4 col-md-4">
+					<div class="list-block animate-box">
+						{% if active.image %}
+						<a href="{% url 'fullList' active.title %}" class="list-list">
+							<img class="img-responsive" src="{{active.image.url}}" alt="{{active.title}}" style="width:100%;">
+						</a>
+						{% elif active.url %}
+						<a href="{% url 'fullList' active.title %}" class="list-list">
+							<img class="img-responsive" src="{{active.url}}" alt="{{active.title}}" width="100%">
+						</a>
+						{% else %}
+						<a href="{% url 'fullList' active.title %}" class="list-list">
+							<img class="img-responsive" src="../media/List/list.jpg" alt="{{active.title}}">
+						</a>
+						{% endif %}
+						{% if active.close %}
+						<p class="text-white bg-danger border-danger list-list1"><span class="fa fa-window-close"></span>&nbsp;Closed</p>
+						{% endif %}
+						<div class="list-block-text">
+							<span class="caption text-secondary">Category: <span class="badge badge-info">{{active.category.category}}</span>
+							</span>
+							<span class="comment text-secondary"> {{ active.timestamp|date:"d M, Y" }}&nbsp;&nbsp;
+								<i class="far fa-comment text-info"> {{active.comment.count}}</i>
+							</span>	
+							<h3><a class="text-dark" href="{% url 'fullList' active.title %}">{{active.title | title}}</a></h3>
+							<div class="row">
+								{% if active.active %}
+								<div class="col">
+									<p class="current">
+										current: <span class="text-success">{% if active.currentbid == active.startbid %} No Bid 
+										{% else %}$ {{active.currentbid}}{% endif %}</span>
+									</p>
+								</div>
+								{% else %}
+								<div class="col">
+									<p class="current">closed: <span class="text-success"> $ {{active.finalbid}}</span></p>
+								</div>
+								{% endif %}
+								<div class="col">
+									<p class="price">Starting: <span class="text-danger"> $ {{active.startbid | floatformat}}</span></p>
+								</div>
+							</div>
+							<p>{{active.description|truncatechars:80 }}</p>
+							<a href="{% url 'fullList' active.title %}" class="btn btn-info">Read more</a>
+						</div> 
+					</div>
+				</div>
+				{% empty%}
+					<div>
+						<img class="img-fluid" src="{% static 'auctions/image/nolist.jpg' %}" style="width: 100%;">
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</main>
+
+{% endblock %}

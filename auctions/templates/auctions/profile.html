@@ -1,0 +1,37 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+	<main>
+		<div class="media col-md-6 offset-md-1">
+			{% if user.is_authenticated %}
+		  		{% if username.image %}
+		  			<img src="../media/{{username.image}}" class="align-self-center mr-3 img-responsive img-rounded" alt="Profile Picture" 
+		  				title="{{username.username}}" width="250px">
+		  		{% else %}
+		  			<img src="../media/profile_pic/avatar.png" class="align-self-center mr-3 img-responsive img-rounded" alt="Profile Picture" 
+		  				title="{{username.username}}" width="250px">
+		  		{% endif %}
+		  	<div class="media-body profile">
+			    <ul class="list-group list-group-flush">
+					<li class="list-group-item">
+						<h2 class="align-self-center">
+							{{ username.username }}
+							
+							{% if user.username == username.username %}
+							<a href=""><span class="fas fa-pencil-alt py-2" style="font-size: 12px;"></span></a>
+					  		{% endif %}
+						</h2>
+			   		</li>
+			   		<li class="list-group-item">{{ username.first_name }} {{username.last_name}}</li>
+					<li class="list-group-item">{{ username.email }}</li>
+					<li class="list-group-item">{{ username.address }}</li>
+					<li class="list-group-item">{{ username.phone }}</li>
+				</ul>
+		  	</div>
+		  	{% endif %}
+		</div>
+	</main>
+
+{% endblock %}

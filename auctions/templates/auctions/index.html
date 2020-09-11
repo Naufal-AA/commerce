@@ -1,0 +1,129 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+	
+	<!-- Home Section -->
+
+	<section id="home" class="main-single-post parallax-section">
+	    <div class="overlay"></div>
+	     	<div class="container">
+	        	<div class="row">
+	        		<div class="col-sm-12 text wow animated bounceIn" data-animation="bounceIn" data-animation-delay="100">
+		            	<h1 id="head-color">Sell your products </h1>
+						<div class="description">
+						<p class="medium-paragraph">
+							pick from the widest range of products from global sellers with <a href="{% url 'index' %}">e-Auction</a> and enjoy!
+						</p>
+					</div>
+				</div>
+	        </div>
+	    </div>
+	</section>
+
+	<!-- List Section -->
+	<section>
+		<p class="text-center" style="color: #632612;font-size:36px;font-weight: bold;margin:0;padding:0;">List Item </p>
+		<p class="text-center" style="color: #632612; font-weight: bold;font-size: 22px;margin:0;padding:0;">
+			<i class="fa fa-minus"></i>
+		</p>
+
+		<div class="list container">
+			<div class="card-deck">
+				{% for list in list %}
+  				<div class="card">
+  					{% if list.image %}
+  					<img src="{{list.image.url}}" class="card-img-top" alt="{{list.title}}">
+  					{% elif list.url %}
+  					<img src="{{list.url}}" class="card-img-top" alt="{{list.title}}">
+  					{% else %}
+  					<img src="../media/List/list.jpg" class="card-img-top" alt="{{list.title}}">
+  					{% endif %}
+    				
+    				<div class="card-body">
+      					<h5 class="card-title">{{list.title | title}}</h5>
+      					<p class="card-text">$ {{list.startbid}} </p>
+      					<a href="{% url 'fullList' list.title %}" class="view btn btn-outline-secondary">View</a>
+    				</div>
+  				</div>
+  				{% endfor %}
+			</div>
+			<div class="col-md-4 offset-md-5">
+				<a href="{% url 'active' %}"><button type="button" class="explore btn btn-outline-secondary">Explore </button></a>
+			</div>
+		</div>
+	</section>
+
+	<!-- facility Section -->
+	<section class="facility">
+		<div class="container">
+            <div class="row">
+              	<div class="col-md-3 offset-md-1">
+                	<div class="service-item">
+                  		<div class="icon">
+                    		<img src="{% static 'auctions/image/1.png' %}" alt="">
+                  		</div>
+                  		<h4>Buy & Sell</h4>
+                  		<p>Aliquam ex velit, viverra eu tristique vel, rhoncus nec ligula. In vel massa sed dolor pharetra interdum vitae posuere.</p>
+                	</div>
+              	</div>
+              	<div class="col-md-4">
+                	<div class="service-item">
+                		<div class="icon">
+                    		<img src="{% static 'auctions/image/2.png' %}" alt="">
+                  		</div>
+                  		<h4>Tools & Apps</h4>
+                  		<p>Sed pulvinar ipsum id leo volutpat, in convallis lectus molestie. Aliquam nisi sapien, faucibus eu consequat id, egestas vitae augue.</p>
+               		</div>
+              	</div>
+              	<div class="col-md-3">
+                	<div class="service-item">
+                		<div class="icon">
+                    		<img src="{% static 'auctions/image/3.png' %}" alt="">
+                  		</div>
+                  		<h4>Quick Support</h4>
+                  		<p>Aliquam ex velit, viverra eu tristique vel, rhoncus nec ligula. In vel massa sed dolor pharetra interdum vitae posuere.</p>
+                	</div>
+            	</div>
+            </div>
+    	</div>
+	</section>
+
+<!-- Contact -->
+	<section class="feedback">
+		<div class="row">
+			<div class="col-md-5 offset-md-1">
+				
+  					<div class="form-group">
+    					<input type="text" class="form-control" id="name" name="name" placeholder="Your Name" 
+    						autocomplete="off" required>
+  					</div>
+  					<div class="form-group">
+    					<input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" required
+    						placeholder="Your email address" autocomplete="off" >
+   						<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+  					</div>
+  					<div class="form-group">
+    					<input type="text" class="form-control" id="subject" name="subject" placeholder="subject" 
+    						autocomplete="off" required>
+  					</div>
+  					<div class="form-group">
+    					<small id="subjectHelp" class="form-text text-muted">your message</small>
+    					<textarea class="form-control" id="message" name="message" aria-describedby="subjectHelp" required></textarea>
+  					</div>
+  					<button type="button" class="btn btn-outline-secondary">Send message</i></button>
+				
+			</div>
+			<div class="col">
+				<div class="info">
+					<ul>
+	               		<li><a href="#"><i class="fa fa-envelope"></i>abc@gmail.com</a></li>
+	               		<li><a href="#"><i class="fa fa-phone-alt"></i>+91 8136919446</a></li>
+	               		<li><a href="#"><i class="fa fa-map-marker-alt"></i>Kasaragod, Kerala, India</a></li>
+	                </ul>
+				</div>
+			</div>
+		</div>
+	</section>
+
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+	<!-- Main Area -->
+
+	<main class="login">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6 offset-md-3">
+					<div class="card">
+						<div class="card-body">
+							<h2 class="card-title">Login</h2>
+							
+							{% if message %}
+							<div class="row no-gutters warning">
+								<div class="col-md-2 warning-icon">
+									<p class="card-text text-center"><i class="fa fa-info-circle"></i><p>
+							    </div>
+								<div class="col-md-10 warning-info">
+									<div class="card-body">	
+										<p class="card-text">{{ message }} </p>
+									</div>
+								</div>
+							</div>
+							{% endif %}
+
+							<div class="">
+								<form action="{% url 'login' %}" method="post">
+									{% csrf_token %}
+									<div class="form-group">
+    									<div>
+    										<label for="name">User Name</label>
+    									</div>
+    									<input type="text" class="form-control" id="name" name="username" autocomplete="off" autofocus >
+  									</div>
+  									<div class="form-group">
+    									<div>
+    										<label for="password">Password</label>
+    									</div>
+    									<input type="password" class="form-control" id="password" name="password">
+  									</div>
+				                  
+				                  <button type="submit" class="btn btn-info btn-block" id="submit" value="Login">Sign in</button>
+				                </form>
+							</div>
+
+							<div>
+								<a href="">Forget your password?</a>
+							</div>
+							<hr>
+							<div>
+								<p>Don't have an account yet? <a href="{% url 'register' %}">Create Your Account</a></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+{% endblock %}
